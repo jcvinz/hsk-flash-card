@@ -2,4 +2,11 @@
 <resources>
 
     <style name="Theme.HSKFlashCard" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <style name="Theme.HSKFlashCard.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenAnimatedIcon">@drawable/splash_screen</item>
+        <item name="windowSplashScreenBackground">#1B1B1B</item>
+        <item name="postSplashScreenTheme">@style/Theme.HSKFlashCard</item>
+    </style>
+
 </resources>
