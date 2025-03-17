@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "667410437119",
+    "project_id": "hsk-flash-card",
+    "storage_bucket": "hsk-flash-card.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:667410437119:android:75a1787c336be69d65cdca",
+        "android_client_info": {
+          "package_name": "com.hskflashcard"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "667410437119-99ln3lfr2dumv8mhd35jnkcbl2m23g3n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hskflashcard",
+            "certificate_hash": "2b7e138feb74920a258e28abc5869be4b43586f6"
+          }
+        },
+        {
+          "client_id": "667410437119-md0i1otkq5m0f0ae7chr923ghfcmc77a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCAZCa9bGLUoczoCJxA1iUQXxVfNG2QAwo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "667410437119-md0i1otkq5m0f0ae7chr923ghfcmc77a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
