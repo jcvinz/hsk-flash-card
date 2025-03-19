@@ -10,6 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.hskflashcard.ui.screens.MainScreenType
+import com.hskflashcard.ui.screens.homecontainer.HomeScreenContainer
 import com.hskflashcard.ui.screens.signin.SignInScreen
 import com.hskflashcard.ui.theme.HSKFlashCardTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -40,7 +41,7 @@ class MainActivity : ComponentActivity() {
                         SignInScreen(navController)
                     }
                     composable<MainScreenType.Home> {
-
+                        HomeScreenContainer()
                     }
                 }
             }
