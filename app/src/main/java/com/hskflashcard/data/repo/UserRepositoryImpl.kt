@@ -1,10 +1,9 @@
 package com.hskflashcard.data.repo
 
-import android.content.Context
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.hskflashcard.data.Resource
-import dagger.hilt.android.qualifiers.ApplicationContext
+import com.hskflashcard.data.source.local.LocalDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -13,10 +12,11 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class AuthRepositoryImpl @Inject constructor(
-    private val firebaseAuth: FirebaseAuth
+class UserRepositoryImpl @Inject constructor(
+    private val firebaseAuth: FirebaseAuth,
+    private val localDataSource: LocalDataSource
 ) :
-    AuthRepository {
+    UserRepository {
 
     override suspend fun handleSignIn(idToken: String): Flow<Resource<Unit>> = flow {
         emit(Resource.Loading())
@@ -26,4 +26,5 @@ class AuthRepositoryImpl @Inject constructor(
     }.catch { throwable ->
         emit(Resource.Error(throwable.localizedMessage ?: "Unknown error"))
     }
+
 }

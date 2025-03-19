@@ -76,6 +76,11 @@ dependencies {
     implementation(libs.navigation.compose)
     implementation(libs.kotlinx.serialization)
 
+    implementation(libs.androidx.ui.text.google.fonts)
+
+    //DataStore
+    implementation(libs.datastore.preferences)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

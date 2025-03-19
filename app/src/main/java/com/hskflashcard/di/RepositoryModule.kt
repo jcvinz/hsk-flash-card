@@ -1,7 +1,7 @@
 package com.hskflashcard.di
 
-import com.hskflashcard.data.repo.AuthRepository
-import com.hskflashcard.data.repo.AuthRepositoryImpl
+import com.hskflashcard.data.repo.UserRepository
+import com.hskflashcard.data.repo.UserRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -12,6 +12,6 @@ import dagger.hilt.components.SingletonComponent
 abstract class RepositoryModule {
 
     @Binds
-    abstract fun provideAuthRepository(authRepositoryImpl: AuthRepositoryImpl): AuthRepository
+    abstract fun provideUserRepository(userRepositoryImpl: UserRepositoryImpl): UserRepository
 
 }

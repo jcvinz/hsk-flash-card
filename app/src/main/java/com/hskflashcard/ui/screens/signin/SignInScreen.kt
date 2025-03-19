@@ -1,5 +1,6 @@
 package com.hskflashcard.ui.screens.signin
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -13,6 +14,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -29,7 +32,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.hskflashcard.R
+import com.hskflashcard.ui.screens.MainScreenType
 import com.hskflashcard.ui.theme.HSKFlashCardTheme
+import com.hskflashcard.utils.UiState
 
 @Composable
 fun SignInScreen(
@@ -37,6 +42,24 @@ fun SignInScreen(
     viewModel: SignInViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
+    val signInState = viewModel.signInState.collectAsState().value
+
+    LaunchedEffect(signInState) {
+        when (signInState) {
+            is UiState.Success -> {
+                navController.navigate(MainScreenType.Home) {
+                    popUpTo(navController.graph.startDestinationId) {
+                        inclusive = true
+                    }
+                    launchSingleTop = true
+                }
+            }
+            is UiState.Error -> {
+                Toast.makeText(context, signInState.error, Toast.LENGTH_SHORT).show()
+            }
+            else -> Unit
+        }
+    }
 
     SignInScreenComponent {
         viewModel.signInWithGoogle(context)
@@ -63,7 +86,7 @@ fun SignInScreenComponent(
                 .background(
                     brush = Brush.verticalGradient(
                         colors = listOf(
-                            Color(0x99141414),
+                            Color(0xCC141414),
                             Color(0xFF141414)
                         )
                     )

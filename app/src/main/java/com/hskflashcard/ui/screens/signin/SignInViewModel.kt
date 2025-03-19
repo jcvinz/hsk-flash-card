@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.Log
 import androidx.credentials.Credential
 import androidx.credentials.CredentialManager
-import androidx.credentials.CredentialOption
 import androidx.credentials.CustomCredential
 import androidx.credentials.exceptions.GetCredentialException
 import androidx.lifecycle.ViewModel
@@ -14,7 +13,7 @@ import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential.Companion.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
 import com.hskflashcard.R
 import com.hskflashcard.data.Resource
-import com.hskflashcard.data.repo.AuthRepository
+import com.hskflashcard.data.repo.UserRepository
 import com.hskflashcard.utils.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,7 +23,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SignInViewModel @Inject constructor (private val authRepository: AuthRepository) : ViewModel() {
+class SignInViewModel @Inject constructor (private val userRepository: UserRepository) : ViewModel() {
 
     private val _signInState = MutableStateFlow<UiState<Unit>>(UiState.Idle())
     val signInState: StateFlow<UiState<Unit>> = _signInState.asStateFlow()
@@ -43,7 +42,7 @@ class SignInViewModel @Inject constructor (private val authRepository: AuthRepos
 
             val response = credentialManager.getCredential(context, request)
 
-            authRepository.handleSignIn(getIdToken(response.credential)).collect {
+            userRepository.handleSignIn(getIdToken(response.credential)).collect {
                 when (it) {
                     is Resource.Loading -> _signInState.value = UiState.Loading()
                     is Resource.Error -> _signInState.value = UiState.Error(it.message!!)
