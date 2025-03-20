@@ -13,18 +13,18 @@ import javax.inject.Singleton
 class LocalDataSource @Inject constructor(private val dataStore: DataStore<Preferences>) {
 
     companion object {
-        private val IS_SIMPLIFIED_KEY = booleanPreferencesKey("is_simplified_key")
+        private val HAS_BEEN_POPULATED = booleanPreferencesKey("has_been_populated_key")
     }
 
-    suspend fun saveIsSimplified(value: Boolean) {
+    suspend fun saveHasBeenPopulated(value: Boolean) {
         dataStore.edit { preferences ->
-            preferences[IS_SIMPLIFIED_KEY] = value
+            preferences[HAS_BEEN_POPULATED] = value
         }
     }
 
-    suspend fun getIsSimplified(): Boolean {
+    suspend fun getHasBeenPopulated(): Boolean {
         return dataStore.data.map { preferences ->
-            preferences[IS_SIMPLIFIED_KEY] ?: true
+            preferences[HAS_BEEN_POPULATED] == true
         }.first()
     }
 

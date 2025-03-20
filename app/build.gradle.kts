@@ -1,6 +1,7 @@
 plugins {
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
+    alias(libs.plugins.devtools.ksp)
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
@@ -80,6 +81,18 @@ dependencies {
 
     //DataStore
     implementation(libs.datastore.preferences)
+
+    //Room
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler)
+
+    //WorkManager
+    implementation(libs.work.runtime.ktx)
+
+    //Hilt Worker
+    implementation(libs.hilt.work)
+    kapt(libs.hilt.compiler)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
