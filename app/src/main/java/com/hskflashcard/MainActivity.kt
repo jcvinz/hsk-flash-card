@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -19,6 +20,8 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
+    private val viewModel by viewModels<MainActivityViewModel>()
+
     @Inject
     lateinit var firebaseAuth: FirebaseAuth
 
@@ -30,6 +33,8 @@ class MainActivity : ComponentActivity() {
         val currentUser = firebaseAuth.currentUser
 
         enableEdgeToEdge()
+
+        viewModel.handleDataPopulation(this)
         setContent {
             HSKFlashCardTheme {
                 val navController = rememberNavController()
