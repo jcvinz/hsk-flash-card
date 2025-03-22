@@ -47,18 +47,18 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hskflashcard.R
+import com.hskflashcard.data.source.local.room.HSKWord
 import kotlin.math.abs
 
 @Composable
 fun FlashCard(
     modifier: Modifier = Modifier,
-    hanzi: String,
-    pinyin: String,
-    meaning: String,
     examples: String,
     isLoading: Boolean,
-    isBookmarked: Boolean,
     enableGestures: Boolean,
+    word: HSKWord,
+    onAiButtonClicked: (String) -> Unit,
+    onBookmarkClicked: (Boolean, Int) -> Unit,
     onSwiped: (FlashCardDirection) -> Unit
 ) {
     val screenWidth = LocalConfiguration.current.screenWidthDp
@@ -68,6 +68,7 @@ fun FlashCard(
     val invisibleThreshold = with(LocalDensity.current) { screenWidth.dp.toPx() }
 
     var isFlipped by remember { mutableStateOf(false) }
+    var isBookmarked by remember { mutableStateOf(false) }
     var offsetX by remember { mutableFloatStateOf(0f) }
     var opacity by remember { mutableFloatStateOf(1f) }
 
@@ -86,11 +87,10 @@ fun FlashCard(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .padding(24.dp)
             .offset { animatedOffset }
             .alpha(animatedOpacity)
             .then(
-                if (enableGestures) {
+                if (enableGestures && !isLoading) {
                     Modifier.pointerInput(Unit) {
                         detectHorizontalDragGestures(
                             onDragEnd = {
@@ -152,7 +152,7 @@ fun FlashCard(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = hanzi,
+                            text = word.simplified,
                             style = MaterialTheme.typography.displayLarge.copy(fontSize = 96.sp)
                         )
                     }
@@ -167,17 +167,17 @@ fun FlashCard(
                         if (examples.isEmpty()) Spacer(modifier = Modifier.weight(1f))
                         else Spacer(modifier = Modifier.height(16.dp))
                         Text(
-                            text = pinyin,
+                            text = word.pinyin,
                             style = MaterialTheme.typography.titleLarge
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = hanzi,
+                            text = word.simplified,
                             style = MaterialTheme.typography.displayLarge
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = meaning,
+                            text = word.translation,
                             style = MaterialTheme.typography.titleLarge
                         )
                         if (examples.isEmpty()) {
@@ -188,7 +188,9 @@ fun FlashCard(
                             ) { loading ->
                                 if (!loading) {
                                     Button(
-                                        onClick = { }
+                                        onClick = {
+                                            onAiButtonClicked(word.simplified)
+                                        }
                                     ) {
                                         Icon(
                                             imageVector = ImageVector.vectorResource(R.drawable.ic_ai_companion),
@@ -218,7 +220,10 @@ fun FlashCard(
                             }
                             Spacer(modifier = Modifier.height(16.dp))
                             IconButton(
-                                onClick = { }
+                                onClick = {
+                                    isBookmarked = !isBookmarked
+                                    onBookmarkClicked(isBookmarked, word.id)
+                                }
                             ) {
                                 AnimatedContent(
                                     targetState = isBookmarked

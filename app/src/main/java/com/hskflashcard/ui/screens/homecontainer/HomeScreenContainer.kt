@@ -59,19 +59,19 @@ fun HomeScreenContainerContent(
 //                        onUndo = { /* Handle undo action */ }
 //                    )
 
-                    FlashCard(
-                        modifier = Modifier.align(Alignment.Center),
-                        hanzi = "爱",
-                        pinyin = "ài",
-                        meaning = "love",
-                        examples = "Examples :\n" +
-                                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vel ipsum in metus sagittis mollis. Nunc feugiat urna non maximus accumsan. Ut tempus odio in pellentesque eleifend. Aliquam mauris ipsum, posuere mattis sollicitudin in, volutpat ac nisi. Phasellus luctus sem elit, eget sodales justo fringilla in. Nullam quis metus eu velit cursus ultrices sed sed nisl. In accumsan quis mi sed varius. Curabitur justo urna, imperdiet nec faucibus sed, hendrerit in mauris. Nam nec ligula diam. Nullam et lectus in velit ultricies consequat. Phasellus posuere velit tortor. Praesent diam dui, lacinia sit amet enim et, feugiat dictum nunc. Phasellus tristique enim tristique odio condimentum, eget maximus risus pellentesque. Donec convallis est in lacus convallis, sed placerat nibh ornare. Donec leo velit, molestie quis dui eget, mattis finibus diam. Suspendisse consectetur tortor ante, sed lobortis libero malesuada et." +
-                                "\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vel ipsum in metus sagittis mollis. Nunc feugiat urna non maximus accumsan. Ut tempus odio in pellentesque eleifend. Aliquam mauris ipsum, posuere mattis sollicitudin in, volutpat ac nisi. Phasellus luctus sem elit, eget sodales justo fringilla in. Nullam quis metus eu velit cursus ultrices sed sed nisl. In accumsan quis mi sed varius. Curabitur justo urna, imperdiet nec faucibus sed, hendrerit in mauris. Nam nec ligula diam. Nullam et lectus in velit ultricies consequat. Phasellus posuere velit tortor. Praesent diam dui, lacinia sit amet enim et, feugiat dictum nunc. Phasellus tristique enim tristique odio condimentum, eget maximus risus pellentesque. Donec convallis est in lacus convallis, sed placerat nibh ornare. Donec leo velit, molestie quis dui eget, mattis finibus diam. Suspendisse consectetur tortor ante, sed lobortis libero malesuada et.",
-                        isLoading = false,
-                        isBookmarked = true,
-                        enableGestures = true,
-                        onSwiped = { }
-                    )
+//                    FlashCard(
+//                        modifier = Modifier.align(Alignment.Center),
+//                        hanzi = "爱",
+//                        pinyin = "ài",
+//                        meaning = "love",
+//                        examples = "Examples :\n" +
+//                                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vel ipsum in metus sagittis mollis. Nunc feugiat urna non maximus accumsan. Ut tempus odio in pellentesque eleifend. Aliquam mauris ipsum, posuere mattis sollicitudin in, volutpat ac nisi. Phasellus luctus sem elit, eget sodales justo fringilla in. Nullam quis metus eu velit cursus ultrices sed sed nisl. In accumsan quis mi sed varius. Curabitur justo urna, imperdiet nec faucibus sed, hendrerit in mauris. Nam nec ligula diam. Nullam et lectus in velit ultricies consequat. Phasellus posuere velit tortor. Praesent diam dui, lacinia sit amet enim et, feugiat dictum nunc. Phasellus tristique enim tristique odio condimentum, eget maximus risus pellentesque. Donec convallis est in lacus convallis, sed placerat nibh ornare. Donec leo velit, molestie quis dui eget, mattis finibus diam. Suspendisse consectetur tortor ante, sed lobortis libero malesuada et." +
+//                                "\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vel ipsum in metus sagittis mollis. Nunc feugiat urna non maximus accumsan. Ut tempus odio in pellentesque eleifend. Aliquam mauris ipsum, posuere mattis sollicitudin in, volutpat ac nisi. Phasellus luctus sem elit, eget sodales justo fringilla in. Nullam quis metus eu velit cursus ultrices sed sed nisl. In accumsan quis mi sed varius. Curabitur justo urna, imperdiet nec faucibus sed, hendrerit in mauris. Nam nec ligula diam. Nullam et lectus in velit ultricies consequat. Phasellus posuere velit tortor. Praesent diam dui, lacinia sit amet enim et, feugiat dictum nunc. Phasellus tristique enim tristique odio condimentum, eget maximus risus pellentesque. Donec convallis est in lacus convallis, sed placerat nibh ornare. Donec leo velit, molestie quis dui eget, mattis finibus diam. Suspendisse consectetur tortor ante, sed lobortis libero malesuada et.",
+//                        isLoading = false,
+//                        isBookmarked = true,
+//                        enableGestures = true,
+//                        onSwiped = { }
+//                    )
 
 //                    FlashCard(
 //                        modifier = Modifier.align(Alignment.Center),

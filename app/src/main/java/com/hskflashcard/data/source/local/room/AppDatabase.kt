@@ -8,4 +8,8 @@ abstract class AppDatabase : RoomDatabase() {
 
     abstract fun hskWordDao(): HSKWordDao
 
+    abstract fun learnedHSKWordDao(): LearnedHSKWordDao
+
+    abstract fun bookmarkedHSKWordDao(): BookmarkedHSKWordDao
+
 }
