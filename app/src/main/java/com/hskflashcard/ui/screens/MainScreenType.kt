@@ -8,4 +8,6 @@ sealed class MainScreenType {
     data object SignIn: MainScreenType()
     @Serializable
     data object Home: MainScreenType()
+    @Serializable
+    data class FlashCard(val hskLevel: String): MainScreenType()
 }

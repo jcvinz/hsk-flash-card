@@ -1,30 +1,43 @@
 package com.hskflashcard.ui.components.flashcard
 
-import androidx.collection.mutableIntListOf
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.hskflashcard.data.source.local.room.HSKWord
 
 @Composable
 fun FlashCardStack(
     modifier: Modifier = Modifier,
-    words: List<HSKWord>
+    activeWords: List<HSKWord>,
+    examples: String,
+    isLoading: Boolean,
+    onAiButtonClicked: (String) -> Unit,
+    onBookmarkClicked: (Boolean, Int) -> Unit,
+    onSwiped: (FlashCardDirection, Int) -> Unit
 ) {
 
-    val visibleWords = 3
-    val processedIndex = remember { mutableIntListOf() }
-    val activeCards =
-        remember { mutableListOf<HSKWord>().apply { addAll(words.take(visibleWords)) } }
-    val nextCardIndex = remember { mutableIntStateOf(visibleWords) }
+    Log.d("FLashCardStack", "$activeWords")
 
-    Box(modifier = modifier.fillMaxSize()) {
-        activeCards.reversed().forEachIndexed { index, word ->
-            val topCard = index == 0
+    Box(modifier = modifier) {
+        activeWords.reversed().forEachIndexed { index, word ->
+            val topIndex = index == activeWords.size - 1
+            Log.d("FlashCardStack", "Index = $index, Word = $word")
 
+            key(word.id) {
+                FlashCard(
+                    modifier = Modifier.offset(y = (-index * 12).dp),
+                    word = word,
+                    examples = examples,
+                    isLoading = isLoading,
+                    enableGestures = topIndex,
+                    onAiButtonClicked = onAiButtonClicked,
+                    onBookmarkClicked = onBookmarkClicked,
+                    onSwiped = onSwiped
+                )
+            }
         }
     }
 

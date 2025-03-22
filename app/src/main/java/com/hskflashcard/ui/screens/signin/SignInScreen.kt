@@ -54,9 +54,11 @@ fun SignInScreen(
                     launchSingleTop = true
                 }
             }
+
             is UiState.Error -> {
                 Toast.makeText(context, signInState.error, Toast.LENGTH_SHORT).show()
             }
+
             else -> Unit
         }
     }

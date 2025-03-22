@@ -36,7 +36,7 @@ class HSKDataWorker @AssistedInject constructor(
 
     private fun parseTSVFiles(context: Context): List<HSKWord> {
         val words = mutableListOf<HSKWord>()
-        val levels = arrayOf(
+        val files = arrayOf(
             "hsk-1-word-list",
             "hsk-2-word-list",
             "hsk-3-word-list",
@@ -45,16 +45,18 @@ class HSKDataWorker @AssistedInject constructor(
             "hsk-6-word-list"
         )
 
-        levels.forEach { level ->
-            val inputStream = context.assets.open("$level.tsv")
+        files.forEach { file ->
+            val inputStream = context.assets.open("$file.tsv")
             val reader = BufferedReader(inputStream.reader())
 
             reader.forEachLine { line ->
                 val tokens = line.split("\t")
                 words.add(
                     HSKWord(
-                        hskLevel = level,
-                        simplified = tokens[1],
+                        hskLevel = file.substringBefore("-word-list"),
+                        simplified = tokens[1]
+                            .replace("\uFF08", "(")
+                            .replace("\uFF09", ")"),
                         pinyin = tokens[2],
                         translation = tokens[3]
                     )
