@@ -9,7 +9,9 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.google.firebase.auth.FirebaseAuth
+import com.hskflashcard.ui.components.flashcard.FlashCardScreen
 import com.hskflashcard.ui.screens.MainScreenType
 import com.hskflashcard.ui.screens.homecontainer.HomeScreenContainer
 import com.hskflashcard.ui.screens.signin.SignInScreen
@@ -46,7 +48,11 @@ class MainActivity : ComponentActivity() {
                         SignInScreen(navController)
                     }
                     composable<MainScreenType.Home> {
-                        HomeScreenContainer()
+                        HomeScreenContainer(navController)
+                    }
+                    composable<MainScreenType.FlashCard> {
+                        val hskLevel = it.toRoute<MainScreenType.FlashCard>().hskLevel
+                        FlashCardScreen(hskLevel)
                     }
                 }
             }

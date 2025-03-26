@@ -15,6 +15,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,15 +23,26 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
 import com.hskflashcard.data.source.local.room.HSKWord
 import com.hskflashcard.ui.theme.HSKFlashCardTheme
 
 @Composable
 fun FlashCardScreen(
-    navController: NavHostController,
+    hskLevel: String,
     viewModel: FlashCardViewModel = hiltViewModel()
 ) {
+
+    FlashCardScreenContent(
+        hskLevel = hskLevel,
+        learnedWords = viewModel.learnedWords.collectAsState().value,
+        totalWords = viewModel.totalWords.collectAsState().value,
+        activeWords = viewModel.activeWords.collectAsState().value,
+        examples = "",
+        isLoading = false,
+        onAiButtonClicked = {},
+        onBookmarkClicked = { _, _ -> },
+        onSwiped = {_, _ -> },
+    )
 
 }
 
@@ -39,14 +51,15 @@ fun FlashCardScreenContent(
     modifier: Modifier = Modifier,
     hskLevel: String,
     learnedWords: Int,
-    words: List<HSKWord>,
+    totalWords: Int,
+    activeWords: List<HSKWord>,
     examples: String,
     isLoading: Boolean,
     onAiButtonClicked: (String) -> Unit,
     onBookmarkClicked: (Boolean, Int) -> Unit,
-    onSwiped: (FlashCardDirection) -> Unit
+    onSwiped: (FlashCardDirection, Int) -> Unit
 ) {
-    val progress by animateFloatAsState(learnedWords.toFloat() / words.size)
+    val progress by animateFloatAsState(learnedWords.toFloat() / totalWords)
 
     Scaffold(
         modifier = modifier
@@ -70,12 +83,12 @@ fun FlashCardScreenContent(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(text = "20 reviewed")
-                    Text(text = "150 cards")
+                    Text(text = "$learnedWords reviewed")
+                    Text(text = "$totalWords cards")
                 }
                 Spacer(modifier = Modifier.height(64.dp))
                 FlashCardStack(
-                    words = words,
+                    activeWords = activeWords,
                     examples = examples,
                     isLoading = isLoading,
                     onAiButtonClicked = onAiButtonClicked,
