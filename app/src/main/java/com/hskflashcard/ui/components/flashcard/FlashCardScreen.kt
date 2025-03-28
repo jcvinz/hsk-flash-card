@@ -59,7 +59,7 @@ fun FlashCardScreenContent(
     onBookmarkClicked: (Boolean, Int) -> Unit,
     onSwiped: (FlashCardDirection, Int) -> Unit
 ) {
-    val progress by animateFloatAsState(learnedWords.toFloat() / totalWords)
+    val progress by animateFloatAsState(learnedWords.toFloat() / totalWords, label = "")
 
     Scaffold(
         modifier = modifier

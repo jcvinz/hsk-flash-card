@@ -52,8 +52,11 @@ class FlashCardViewModel @Inject constructor(
             FlashCardDirection.LEFT -> {
 
             }
-            FlashCardDirection.RIGHT -> {
 
+            FlashCardDirection.RIGHT -> {
+                viewModelScope.launch {
+                    hskWordRepository.saveToLearnedWords(wordId)
+                }
             }
         }
     }
@@ -67,6 +70,7 @@ class FlashCardViewModel @Inject constructor(
                         _learnedWords.value = data
                     }
                 }
+
                 is Resource.Error -> {}
             }
         }
@@ -84,6 +88,7 @@ class FlashCardViewModel @Inject constructor(
                         _nextCardIndex.value = _activeWords.value.size
                     }
                 }
+
                 is Resource.Error -> {}
             }
         }

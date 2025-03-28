@@ -3,6 +3,7 @@ package com.hskflashcard.ui.components.flashcard
 import android.util.Log
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.animateIntOffsetAsState
 import androidx.compose.animation.core.snap
 import androidx.compose.foundation.clickable
@@ -37,6 +38,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
@@ -68,10 +70,15 @@ fun FlashCard(
     var isFlipped by remember { mutableStateOf(false) }
     var isBookmarked by remember { mutableStateOf(false) }
     var offsetX by remember { mutableFloatStateOf(0f) }
+    var rotation by remember { mutableFloatStateOf(0f) }
 
     val animatedOffset by animateIntOffsetAsState(
         targetValue = IntOffset(offsetX.toInt(), 0),
-        animationSpec = snap()
+        animationSpec = snap(), label = ""
+    )
+
+    val animatedRotation by animateFloatAsState(
+        targetValue = rotation, label = ""
     )
 
     val scrollState = rememberScrollState()
@@ -81,6 +88,7 @@ fun FlashCard(
         modifier = modifier
             .fillMaxWidth()
             .offset { animatedOffset }
+            .rotate (animatedRotation)
             .then(
                 if (enableGestures && !isLoading) {
                     Modifier.pointerInput(Unit) {
@@ -88,29 +96,32 @@ fun FlashCard(
                             onDragEnd = {
                                 when {
                                     offsetX < -thresholdInPx -> {
-                                        Log.d("FlashCardOffset", "Swipe Left")
-                                        Log.d("FlashCardOffset", "offsetX: $offsetX")
                                         offsetX = -invisibleThreshold
                                         onSwiped(FlashCardDirection.LEFT, word.id)
                                     }
 
                                     offsetX > thresholdInPx -> {
-                                        Log.d("FlashCardOffset", "Swipe Right")
-                                        Log.d("FlashCardOffset", "offsetX: $offsetX")
                                         offsetX = invisibleThreshold
                                         onSwiped(FlashCardDirection.RIGHT, word.id)
                                     }
 
                                     else -> {
                                         offsetX = 0f
+                                        rotation = 0f
                                     }
                                 }
                             },
                             onDragCancel = {
                                 offsetX = 0f
+                                rotation = 0f
                             },
-                            onHorizontalDrag = { pointerInputChange, amount ->
+                            onHorizontalDrag = { _, amount ->
                                 offsetX += amount
+                                if (offsetX < 0) {
+                                    rotation = -5f
+                                } else {
+                                    rotation = 5f
+                                }
                             }
                         )
                     }
@@ -214,7 +225,7 @@ fun FlashCard(
                                 }
                             ) {
                                 AnimatedContent(
-                                    targetState = isBookmarked
+                                    targetState = isBookmarked, label = ""
                                 ) { bookmarked ->
                                     if (bookmarked) {
                                         Icon(
