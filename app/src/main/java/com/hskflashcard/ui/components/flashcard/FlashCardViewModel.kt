@@ -35,6 +35,9 @@ class FlashCardViewModel @Inject constructor(
     private val _activeWords = MutableStateFlow<List<HSKWord>>(emptyList())
     val activeWords: StateFlow<List<HSKWord>> = _activeWords.asStateFlow()
 
+    private val _nextCardIndex = MutableStateFlow<Int>(VISIBLE_WORDS)
+    val nextCardIndex: StateFlow<Int> = _nextCardIndex.asStateFlow()
+
     companion object {
         private const val VISIBLE_WORDS = 3
     }

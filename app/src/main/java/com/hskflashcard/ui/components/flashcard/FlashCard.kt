@@ -56,7 +56,6 @@ fun FlashCard(
     modifier: Modifier = Modifier,
     examples: String,
     isLoading: Boolean,
-    isBookmarked: Boolean,
     enableGestures: Boolean,
     word: HSKWord,
     onAiButtonClicked: (String) -> Unit,
