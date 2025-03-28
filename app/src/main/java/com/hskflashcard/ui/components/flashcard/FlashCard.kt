@@ -22,8 +22,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -37,29 +38,29 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
-import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hskflashcard.R
-import kotlin.math.abs
+import com.hskflashcard.data.source.local.room.HSKWord
 
 @Composable
 fun FlashCard(
     modifier: Modifier = Modifier,
-    hanzi: String,
-    pinyin: String,
-    meaning: String,
     examples: String,
     isLoading: Boolean,
-    isBookmarked: Boolean,
     enableGestures: Boolean,
-    onSwiped: (FlashCardDirection) -> Unit
+    word: HSKWord,
+    onAiButtonClicked: (String) -> Unit,
+    onBookmarkClicked: (Boolean, Int) -> Unit,
+    onSwiped: (FlashCardDirection, Int) -> Unit
 ) {
     val screenWidth = LocalConfiguration.current.screenWidthDp
     val thresholdPercentage = 0.4f
@@ -68,61 +69,60 @@ fun FlashCard(
     val invisibleThreshold = with(LocalDensity.current) { screenWidth.dp.toPx() }
 
     var isFlipped by remember { mutableStateOf(false) }
+    var isBookmarked by remember { mutableStateOf(false) }
     var offsetX by remember { mutableFloatStateOf(0f) }
-    var opacity by remember { mutableFloatStateOf(1f) }
-
-    val animatedOpacity by animateFloatAsState(
-        targetValue = opacity,
-        animationSpec = snap()
-    )
+    var rotation by remember { mutableFloatStateOf(0f) }
 
     val animatedOffset by animateIntOffsetAsState(
         targetValue = IntOffset(offsetX.toInt(), 0),
-        animationSpec = snap()
+        animationSpec = snap(), label = ""
+    )
+
+    val animatedRotation by animateFloatAsState(
+        targetValue = rotation, label = ""
     )
 
     val scrollState = rememberScrollState()
 
-    Card(
+    ElevatedCard(
+        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
         modifier = modifier
             .fillMaxWidth()
-            .padding(24.dp)
             .offset { animatedOffset }
-            .alpha(animatedOpacity)
+            .rotate (animatedRotation)
             .then(
-                if (enableGestures) {
+                if (enableGestures && !isLoading) {
                     Modifier.pointerInput(Unit) {
                         detectHorizontalDragGestures(
                             onDragEnd = {
                                 when {
                                     offsetX < -thresholdInPx -> {
-                                        Log.d("FlashCardOffset", "Swipe Left")
-                                        Log.d("FlashCardOffset", "offsetX: $offsetX")
                                         offsetX = -invisibleThreshold
-                                        onSwiped(FlashCardDirection.LEFT)
+                                        onSwiped(FlashCardDirection.LEFT, word.id)
                                     }
 
                                     offsetX > thresholdInPx -> {
-                                        Log.d("FlashCardOffset", "Swipe Right")
-                                        Log.d("FlashCardOffset", "offsetX: $offsetX")
                                         offsetX = invisibleThreshold
-                                        onSwiped(FlashCardDirection.RIGHT)
+                                        onSwiped(FlashCardDirection.RIGHT, word.id)
                                     }
 
                                     else -> {
                                         offsetX = 0f
-                                        opacity = 1f
+                                        rotation = 0f
                                     }
                                 }
                             },
                             onDragCancel = {
                                 offsetX = 0f
-                                opacity = 1f
+                                rotation = 0f
                             },
-                            onHorizontalDrag = { pointerInputChange, amount ->
+                            onHorizontalDrag = { _, amount ->
                                 offsetX += amount
-                                val alpha = 1f - (abs(offsetX) / 500f)
-                                opacity = alpha.coerceIn(0f, 1f)
+                                if (offsetX < 0) {
+                                    rotation = -5f
+                                } else {
+                                    rotation = 5f
+                                }
                             }
                         )
                     }
@@ -152,8 +152,9 @@ fun FlashCard(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = hanzi,
-                            style = MaterialTheme.typography.displayLarge.copy(fontSize = 96.sp)
+                            text = word.simplified,
+                            style = MaterialTheme.typography.displayLarge,
+                            textAlign = TextAlign.Center
                         )
                     }
                 } else {
@@ -167,17 +168,17 @@ fun FlashCard(
                         if (examples.isEmpty()) Spacer(modifier = Modifier.weight(1f))
                         else Spacer(modifier = Modifier.height(16.dp))
                         Text(
-                            text = pinyin,
+                            text = word.pinyin,
                             style = MaterialTheme.typography.titleLarge
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = hanzi,
+                            text = word.simplified,
                             style = MaterialTheme.typography.displayLarge
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = meaning,
+                            text = word.translation,
                             style = MaterialTheme.typography.titleLarge
                         )
                         if (examples.isEmpty()) {
@@ -188,7 +189,9 @@ fun FlashCard(
                             ) { loading ->
                                 if (!loading) {
                                     Button(
-                                        onClick = { }
+                                        onClick = {
+                                            onAiButtonClicked(word.simplified)
+                                        }
                                     ) {
                                         Icon(
                                             imageVector = ImageVector.vectorResource(R.drawable.ic_ai_companion),
@@ -218,10 +221,13 @@ fun FlashCard(
                             }
                             Spacer(modifier = Modifier.height(16.dp))
                             IconButton(
-                                onClick = { }
+                                onClick = {
+                                    isBookmarked = !isBookmarked
+                                    onBookmarkClicked(isBookmarked, word.id)
+                                }
                             ) {
                                 AnimatedContent(
-                                    targetState = isBookmarked
+                                    targetState = isBookmarked, label = ""
                                 ) { bookmarked ->
                                     if (bookmarked) {
                                         Icon(

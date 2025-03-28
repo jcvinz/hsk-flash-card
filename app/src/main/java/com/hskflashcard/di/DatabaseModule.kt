@@ -27,4 +27,10 @@ object DatabaseModule {
     @Provides
     fun provideHSKWordDao(database: AppDatabase) = database.hskWordDao()
 
+    @Provides
+    fun provideLearnedHSKWordDao(database: AppDatabase) = database.learnedHSKWordDao()
+
+    @Provides
+    fun provideBookmarkedHSKWordDao(database: AppDatabase) = database.bookmarkedHSKWordDao()
+
 }

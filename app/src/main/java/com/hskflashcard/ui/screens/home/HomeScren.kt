@@ -28,21 +28,34 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavHostController
 import com.hskflashcard.R
 import com.hskflashcard.ui.components.DailyGoalsCard
+import com.hskflashcard.ui.screens.MainScreenType
 import com.hskflashcard.ui.theme.HSKFlashCardTheme
 
 @Composable
-fun HomeScreen() {
-    HomeScreenContent(name = "Jonathan Calvin")
+fun HomeScreen(
+    navController: NavHostController
+) {
+    HomeScreenContent(name = "Jonathan Calvin") {
+        navController.navigate(MainScreenType.FlashCard(hskLevel = it)) {
+            popUpTo(navController.graph.findStartDestination().id) {
+                saveState = true
+            }
+            launchSingleTop = true
+        }
+    }
 }
 
 @Composable
 fun HomeScreenContent(
     modifier: Modifier = Modifier,
-    name: String
+    name: String,
+    onLevelClicked: (String) -> Unit
 ) {
-    val hskLevelList = listOf("HSK 1", "HSK 2", "HSK 3", "HSK 4", "HSK 5", "HSK 6", "HSK 7-9")
+    val hskLevelList = listOf("HSK 1", "HSK 2", "HSK 3", "HSK 4", "HSK 5", "HSK 6")
 
     Column(
         modifier = modifier
@@ -92,7 +105,7 @@ fun HomeScreenContent(
                         .fillMaxWidth()
                         .heightIn(min = 180.dp)
                         .clickable {
-
+                            onLevelClicked(hskLevelList[it])
                         },
                     shape = RoundedCornerShape(16.dp)
                 ) {
@@ -124,6 +137,6 @@ fun HomeScreenPreview() {
     HSKFlashCardTheme {
         HomeScreenContent(
             name = "Jonathan Calvin"
-        )
+        ) { }
     }
 }
