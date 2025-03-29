@@ -1,10 +1,15 @@
 package com.hskflashcard.data.repo
 
+import android.util.Log
+import com.google.firebase.vertexai.GenerativeModel
+import com.google.firebase.vertexai.type.Content
+import com.google.gson.Gson
 import com.hskflashcard.data.Resource
 import com.hskflashcard.data.source.local.room.HSKWord
 import com.hskflashcard.data.source.local.room.HSKWordDao
 import com.hskflashcard.data.source.local.room.LearnedHSKWord
 import com.hskflashcard.data.source.local.room.LearnedHSKWordDao
+import com.hskflashcard.data.source.remote.HSKExamplesResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -14,7 +19,8 @@ import javax.inject.Singleton
 @Singleton
 class HSKWordRepositoryImpl @Inject constructor(
     private val hskWordDao: HSKWordDao,
-    private val learnedHSKWordDao: LearnedHSKWordDao
+    private val learnedHSKWordDao: LearnedHSKWordDao,
+    private val firebaseVertexAIModel: GenerativeModel
 ) : HSKWordRepository {
 
     override suspend fun getHSKWords(hskLevel: String): Flow<Resource<List<HSKWord>>> = flow {
@@ -39,6 +45,30 @@ class HSKWordRepositoryImpl @Inject constructor(
         emit(Resource.Success(Unit))
     }.catch {
         emit(Resource.Error(it.localizedMessage ?: "Unknown error"))
+    }
+
+    override suspend fun getExamples(word: String): Flow<Resource<String>> = flow {
+        emit(Resource.Loading())
+        val prompt = Content.Builder().text("Help me to understand this word: $word").build()
+        val response = firebaseVertexAIModel.generateContent(prompt)
+        val tokenResponse = firebaseVertexAIModel.countTokens(prompt)
+
+        Log.d("HSKWordRepositoryImpl", response.text.toString())
+        Log.d("HSKWordRepositoryImpl", "Total Tokens : ${tokenResponse.totalTokens}")
+        Log.d(
+            "HSKWordRepositoryImpl",
+            "Total Billable Characters : ${tokenResponse.totalBillableCharacters}"
+        )
+
+        if (response.text != null) {
+            val examplesResponse = Gson().fromJson(response.text, HSKExamplesResponse::class.java)
+            emit(Resource.Success(examplesResponse.explanation + "\n\n" + examplesResponse.examples))
+        } else {
+            emit(Resource.Error("No response from AI model"))
+        }
+    }.catch { throwable ->
+        Log.e("HSKWordRepositoryImpl", throwable.message.toString())
+        emit(Resource.Error("Get examples failed: ${throwable.message}"))
     }
 
 }

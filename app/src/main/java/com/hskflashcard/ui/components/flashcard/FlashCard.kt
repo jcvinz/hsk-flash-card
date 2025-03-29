@@ -1,6 +1,5 @@
 package com.hskflashcard.ui.components.flashcard
 
-import android.util.Log
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
@@ -47,7 +46,8 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.halilibo.richtext.commonmark.Markdown
+import com.halilibo.richtext.ui.material3.RichText
 import com.hskflashcard.R
 import com.hskflashcard.data.source.local.room.HSKWord
 
@@ -89,7 +89,7 @@ fun FlashCard(
         modifier = modifier
             .fillMaxWidth()
             .offset { animatedOffset }
-            .rotate (animatedRotation)
+            .rotate(animatedRotation)
             .then(
                 if (enableGestures && !isLoading) {
                     Modifier.pointerInput(Unit) {
@@ -174,7 +174,7 @@ fun FlashCard(
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
                             text = word.simplified,
-                            style = MaterialTheme.typography.displayLarge
+                            style = MaterialTheme.typography.headlineLarge
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
@@ -209,15 +209,17 @@ fun FlashCard(
                             Spacer(modifier = Modifier.height(16.dp))
                             Box(
                                 modifier = Modifier
-                                    .heightIn(max = 356.dp)
+                                    .height(356.dp)
                                     .fillMaxWidth()
                                     .verticalScroll(scrollState)
                             ) {
-                                Text(
+                                RichText(
                                     modifier = Modifier.fillMaxWidth(),
-                                    text = examples,
-                                    style = MaterialTheme.typography.bodySmall
-                                )
+                                ) {
+                                    Markdown(
+                                        examples.trimIndent()
+                                    )
+                                }
                             }
                             Spacer(modifier = Modifier.height(16.dp))
                             IconButton(
