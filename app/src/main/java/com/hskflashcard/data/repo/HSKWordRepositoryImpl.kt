@@ -5,6 +5,8 @@ import com.google.firebase.vertexai.GenerativeModel
 import com.google.firebase.vertexai.type.Content
 import com.google.gson.Gson
 import com.hskflashcard.data.Resource
+import com.hskflashcard.data.source.local.room.BookmarkedHSKWord
+import com.hskflashcard.data.source.local.room.BookmarkedHSKWordDao
 import com.hskflashcard.data.source.local.room.HSKWord
 import com.hskflashcard.data.source.local.room.HSKWordDao
 import com.hskflashcard.data.source.local.room.LearnedHSKWord
@@ -20,6 +22,7 @@ import javax.inject.Singleton
 class HSKWordRepositoryImpl @Inject constructor(
     private val hskWordDao: HSKWordDao,
     private val learnedHSKWordDao: LearnedHSKWordDao,
+    private val bookmarkedHSKWordDao: BookmarkedHSKWordDao,
     private val firebaseVertexAIModel: GenerativeModel
 ) : HSKWordRepository {
 
@@ -69,6 +72,29 @@ class HSKWordRepositoryImpl @Inject constructor(
     }.catch { throwable ->
         Log.e("HSKWordRepositoryImpl", throwable.message.toString())
         emit(Resource.Error("Get examples failed: ${throwable.message}"))
+    }
+
+    override suspend fun saveToBookmarkedWords(
+        wordId: Int,
+        examples: String
+    ): Flow<Resource<Unit>> = flow {
+        emit(Resource.Loading())
+        bookmarkedHSKWordDao.bookmarkWord(BookmarkedHSKWord(hskWordId = wordId, examples = examples))
+        Log.d("HSKWordRepositoryImpl", "Saved: $wordId, $examples")
+        emit(Resource.Success(Unit))
+    }.catch { throwable ->
+        Log.e("HSKWordRepositoryImpl", throwable.message.toString())
+        emit(Resource.Error(throwable.localizedMessage ?: "Unknown error"))
+    }
+
+    override suspend fun removeFromBookmarkedWords(wordId: Int): Flow<Resource<Unit>> = flow {
+        emit(Resource.Loading())
+        bookmarkedHSKWordDao.removeWord(wordId)
+        Log.d("HSKWordRepositoryImpl", "Removed: $wordId")
+        emit(Resource.Success(Unit))
+    }.catch { throwable ->
+        Log.e("HSKWordRepositoryImpl", throwable.message.toString())
+        emit(Resource.Error(throwable.localizedMessage ?: "Unknown error"))
     }
 
 }
