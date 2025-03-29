@@ -19,12 +19,9 @@ fun FlashCardStack(
     onSwiped: (FlashCardDirection, Int) -> Unit
 ) {
 
-    Log.d("FLashCardStack", "$activeWords")
-
     Box(modifier = modifier) {
         activeWords.reversed().forEachIndexed { index, word ->
             val topIndex = index == activeWords.size - 1
-            Log.d("FlashCardStack", "Index = $index, Word = $word")
 
             key(word.id) {
                 FlashCard(

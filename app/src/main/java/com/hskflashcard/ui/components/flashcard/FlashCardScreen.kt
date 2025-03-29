@@ -37,9 +37,9 @@ fun FlashCardScreen(
         learnedWords = viewModel.learnedWords.collectAsState().value,
         totalWords = viewModel.totalWords.collectAsState().value,
         activeWords = viewModel.activeWords.collectAsState().value,
-        examples = "",
-        isLoading = false,
-        onAiButtonClicked = {},
+        examples = viewModel.examples.collectAsState().value,
+        isLoading = viewModel.isLoading.collectAsState().value,
+        onAiButtonClicked = viewModel::onAiButtonClicked,
         onBookmarkClicked = { _, _ -> },
         onSwiped = viewModel::onSwiped,
     )

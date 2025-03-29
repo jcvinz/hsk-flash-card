@@ -35,8 +35,11 @@ class FlashCardViewModel @Inject constructor(
     private val _activeWords = MutableStateFlow<List<HSKWord>>(emptyList())
     val activeWords: StateFlow<List<HSKWord>> = _activeWords.asStateFlow()
 
-    private val _nextCardIndex = MutableStateFlow<Int>(VISIBLE_WORDS)
-    val nextCardIndex: StateFlow<Int> = _nextCardIndex.asStateFlow()
+    private val _isLoading = MutableStateFlow<Boolean>(false)
+    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+
+    private val _examples = MutableStateFlow<String>("")
+    val examples: StateFlow<String> = _examples.asStateFlow()
 
     companion object {
         private const val VISIBLE_WORDS = 3
@@ -53,10 +56,11 @@ class FlashCardViewModel @Inject constructor(
     fun onSwiped(direction: FlashCardDirection, wordId: Int) {
         when (direction) {
             FlashCardDirection.LEFT -> {
-
+                _examples.update { "" }
             }
 
             FlashCardDirection.RIGHT -> {
+                _examples.update { "" }
                 viewModelScope.launch {
                     hskWordRepository.saveToLearnedWords(wordId).collect {
                         when (it) {
@@ -82,6 +86,23 @@ class FlashCardViewModel @Inject constructor(
         }
     }
 
+    fun onAiButtonClicked(word: String) = viewModelScope.launch {
+        hskWordRepository.getExamples(word).collect { resource ->
+            when (resource) {
+                is Resource.Loading -> {
+                    _isLoading.update { true }
+                }
+                is Resource.Success -> {
+                    _isLoading.update { false }
+                    _examples.update { resource.data!! }
+                }
+                is Resource.Error -> {
+                    _isLoading.update { false }
+                }
+            }
+        }
+    }
+
     private fun fetchLearnedWords(hskLevel: String) = viewModelScope.launch {
         hskWordRepository.getTotalLearnedWords(hskLevel).collect {
             when (it) {
@@ -91,7 +112,6 @@ class FlashCardViewModel @Inject constructor(
                         _learnedWords.update { data }
                     }
                 }
-
                 is Resource.Error -> {}
             }
         }
@@ -109,7 +129,6 @@ class FlashCardViewModel @Inject constructor(
                         _nextCardIndex = _activeWords.value.size - 1
                     }
                 }
-
                 is Resource.Error -> {}
             }
         }

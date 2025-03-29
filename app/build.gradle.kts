@@ -94,6 +94,16 @@ dependencies {
     implementation(libs.hilt.work)
     kapt(libs.hilt.compiler)
 
+    //VertexAI
+    implementation(libs.firebase.vertexai)
+
+    //Rich Text
+    implementation(libs.richtext)
+    implementation(libs.richtext.commonmark)
+
+    //Gson
+    implementation(libs.gson)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
