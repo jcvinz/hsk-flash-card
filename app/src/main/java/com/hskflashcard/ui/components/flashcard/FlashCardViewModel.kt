@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.toRoute
 import com.hskflashcard.data.Resource
 import com.hskflashcard.data.repo.HSKWordRepository
@@ -13,6 +14,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -53,6 +55,32 @@ class FlashCardViewModel @Inject constructor(
         fetchHskWords(hskLevel)
     }
 
+    fun onAiButtonClicked(word: String) = viewModelScope.launch {
+        hskWordRepository.getExamples(word).collect { resource ->
+            when (resource) {
+                is Resource.Loading -> {
+                    _isLoading.update { true }
+                }
+                is Resource.Success -> {
+                    _isLoading.update { false }
+                    _examples.update { resource.data!! }
+                }
+                is Resource.Error -> {
+                    _isLoading.update { false }
+                }
+            }
+        }
+    }
+
+    fun onBookmarkClicked(isBookmarked: Boolean, wordId: Int) = viewModelScope.launch {
+        Log.d("FlashCardViewModel", "onBookmarkClicked: $isBookmarked, $wordId")
+        if (isBookmarked) {
+            hskWordRepository.saveToBookmarkedWords(wordId, _examples.value).collect()
+        } else {
+            hskWordRepository.removeFromBookmarkedWords(wordId).collect()
+        }
+    }
+
     fun onSwiped(direction: FlashCardDirection, wordId: Int) {
         when (direction) {
             FlashCardDirection.LEFT -> {
@@ -83,23 +111,6 @@ class FlashCardViewModel @Inject constructor(
             Log.d("FlashCardViewModel", "${_activeWords.value}")
         } else {
             // EMPTY
-        }
-    }
-
-    fun onAiButtonClicked(word: String) = viewModelScope.launch {
-        hskWordRepository.getExamples(word).collect { resource ->
-            when (resource) {
-                is Resource.Loading -> {
-                    _isLoading.update { true }
-                }
-                is Resource.Success -> {
-                    _isLoading.update { false }
-                    _examples.update { resource.data!! }
-                }
-                is Resource.Error -> {
-                    _isLoading.update { false }
-                }
-            }
         }
     }
 

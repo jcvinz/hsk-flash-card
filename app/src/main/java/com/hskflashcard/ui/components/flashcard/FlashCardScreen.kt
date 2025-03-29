@@ -40,7 +40,7 @@ fun FlashCardScreen(
         examples = viewModel.examples.collectAsState().value,
         isLoading = viewModel.isLoading.collectAsState().value,
         onAiButtonClicked = viewModel::onAiButtonClicked,
-        onBookmarkClicked = { _, _ -> },
+        onBookmarkClicked = viewModel::onBookmarkClicked,
         onSwiped = viewModel::onSwiped,
     )
 

@@ -14,4 +14,7 @@ interface HSKWordRepository {
 
     suspend fun getExamples(word: String): Flow<Resource<String>>
 
+    suspend fun saveToBookmarkedWords(wordId: Int, examples: String): Flow<Resource<Unit>>
+
+    suspend fun removeFromBookmarkedWords(wordId: Int): Flow<Resource<Unit>>
 }
