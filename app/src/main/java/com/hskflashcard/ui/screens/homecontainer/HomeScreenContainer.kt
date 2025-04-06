@@ -14,6 +14,7 @@ import androidx.navigation.compose.rememberNavController
 import com.hskflashcard.ui.components.BottomNavBar
 import com.hskflashcard.ui.screens.HomeScreenType
 import com.hskflashcard.ui.screens.home.HomeScreen
+import com.hskflashcard.ui.screens.profile.ProfileScreen
 
 @Composable
 fun HomeScreenContainer(
@@ -48,6 +49,9 @@ fun HomeScreenContainerContent(
             }
             composable<HomeScreenType.Bookmark> {
                 Box(modifier = Modifier.fillMaxSize())
+            }
+            composable<HomeScreenType.Profile> {
+                ProfileScreen()
             }
         }
     }

@@ -21,6 +21,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -28,18 +29,22 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import com.hskflashcard.R
-import com.hskflashcard.ui.components.DailyGoalsCard
 import com.hskflashcard.ui.screens.MainScreenType
 import com.hskflashcard.ui.theme.HSKFlashCardTheme
 
 @Composable
 fun HomeScreen(
-    navController: NavHostController
+    navController: NavHostController,
+    viewModel: HomeViewModel = hiltViewModel()
 ) {
-    HomeScreenContent(name = "Jonathan Calvin") {
+    HomeScreenContent(
+        name = "Jonathan Calvin",
+        progress = viewModel.progress.collectAsState().value
+    ) {
         navController.navigate(MainScreenType.FlashCard(hskLevel = it)) {
             popUpTo(navController.graph.findStartDestination().id) {
                 saveState = true
@@ -53,6 +58,7 @@ fun HomeScreen(
 fun HomeScreenContent(
     modifier: Modifier = Modifier,
     name: String,
+    progress: Pair<Int, Int>,
     onLevelClicked: (String) -> Unit
 ) {
     val hskLevelList = listOf("HSK 1", "HSK 2", "HSK 3", "HSK 4", "HSK 5", "HSK 6")
@@ -86,11 +92,14 @@ fun HomeScreenContent(
             )
         }
         Spacer(modifier = Modifier.height(32.dp))
-        DailyGoalsCard(
-            modifier = Modifier.padding(horizontal = 24.dp),
-            learnedWords = 8
-        )
-        Spacer(modifier = Modifier.height(32.dp))
+
+//        AllProgressCard(
+//            modifier = Modifier.padding(horizontal = 24.dp),
+//            learnedWords = progress.first,
+//            totalWords = progress.second
+//        )
+//        Spacer(modifier = Modifier.height(32.dp))
+
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
             contentPadding = PaddingValues(bottom = 24.dp, start = 24.dp, end = 24.dp),
@@ -136,7 +145,8 @@ fun HomeScreenContent(
 fun HomeScreenPreview() {
     HSKFlashCardTheme {
         HomeScreenContent(
-            name = "Jonathan Calvin"
+            name = "Jonathan Calvin",
+            progress = Pair(0,0)
         ) { }
     }
 }

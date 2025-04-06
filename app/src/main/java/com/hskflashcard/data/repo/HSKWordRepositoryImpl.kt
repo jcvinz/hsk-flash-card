@@ -97,4 +97,13 @@ class HSKWordRepositoryImpl @Inject constructor(
         emit(Resource.Error(throwable.localizedMessage ?: "Unknown error"))
     }
 
+    override suspend fun getAllProgress(): Flow<Resource<Pair<Int, Int>>> = flow {
+        emit(Resource.Loading())
+        val totalWords = hskWordDao.getTotalWords()
+        val totalLearnedWords = learnedHSKWordDao.getTotalLearnedWords()
+        emit(Resource.Success(Pair(totalLearnedWords, totalWords)))
+    }.catch { throwable ->
+        emit(Resource.Error(throwable.localizedMessage ?: "Unknown error"))
+    }
+
 }

@@ -35,6 +35,12 @@ fun BottomNavBar(
             selectedIcon = ImageVector.vectorResource(R.drawable.ic_round_bookmark),
             unselectedIcon = ImageVector.vectorResource(R.drawable.ic_round_bookmark_border),
             route = HomeScreenType.Bookmark
+        ),
+        BottomNavItem(
+            label = "Profile",
+            selectedIcon = ImageVector.vectorResource(R.drawable.ic_round_person),
+            unselectedIcon = ImageVector.vectorResource(R.drawable.ic_round_person_outline),
+            route = HomeScreenType.Profile
         )
     )
 

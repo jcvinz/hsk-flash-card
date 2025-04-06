@@ -8,4 +8,6 @@ sealed class HomeScreenType {
     data object Home : HomeScreenType()
     @Serializable
     data object Bookmark : HomeScreenType()
+    @Serializable
+    data object Profile : HomeScreenType()
 }

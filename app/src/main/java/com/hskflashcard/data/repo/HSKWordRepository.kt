@@ -17,4 +17,6 @@ interface HSKWordRepository {
     suspend fun saveToBookmarkedWords(wordId: Int, examples: String): Flow<Resource<Unit>>
 
     suspend fun removeFromBookmarkedWords(wordId: Int): Flow<Resource<Unit>>
+
+    suspend fun getAllProgress(): Flow<Resource<Pair<Int, Int>>>
 }

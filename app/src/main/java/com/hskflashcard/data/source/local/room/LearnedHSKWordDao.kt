@@ -14,4 +14,7 @@ interface LearnedHSKWordDao {
     @Query("SELECT COUNT() FROM learned_hsk_word INNER JOIN hsk_word ON learned_hsk_word.hskWordId = hsk_word.id WHERE hsk_word.hskLevel = :hskLevel")
     suspend fun getTotalLearnedWords(hskLevel: String): Int
 
+    @Query("SELECT COUNT() FROM learned_hsk_word")
+    suspend fun getTotalLearnedWords(): Int
+
 }

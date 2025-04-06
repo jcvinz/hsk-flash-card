@@ -25,6 +25,7 @@ work = "2.10.0"
 hiltWorker = "1.0.0"
 richText = "1.0.0-alpha02"
 gson = "2.12.1"
+coil = "3.1.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -64,6 +65,8 @@ firebase-vertexai = { group = "com.google.firebase", name = "firebase-vertexai" 
 richtext = { group = "com.halilibo.compose-richtext", name = "richtext-ui-material3", version.ref = "richText" }
 richtext-commonmark = { group = "com.halilibo.compose-richtext", name = "richtext-commonmark", version.ref = "richText" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
+coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
+coil-network-okhttp = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coil" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

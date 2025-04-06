@@ -1,5 +1,6 @@
 package com.hskflashcard.ui.components
 
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,6 +17,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -24,12 +26,12 @@ import androidx.compose.ui.unit.dp
 import com.hskflashcard.ui.theme.HSKFlashCardTheme
 
 @Composable
-fun DailyGoalsCard(
+fun ProgressCard(
     modifier: Modifier = Modifier,
     learnedWords: Int = 0,
-    totalWords: Int = 10
+    totalWords: Int = 0
 ) {
-    val progress = learnedWords.toFloat() / totalWords
+    val progress by animateFloatAsState(learnedWords.toFloat() / totalWords)
     val percentage = (progress * 100).toInt()
 
     Surface(
@@ -45,7 +47,7 @@ fun DailyGoalsCard(
         ) {
             Column {
                 Text(
-                    text = "Learned Today",
+                    text = "Your Progress",
                     style = MaterialTheme.typography.bodySmall
                 )
                 Spacer(modifier = Modifier.height(4.dp))
@@ -77,6 +79,6 @@ fun DailyGoalsCard(
 @Composable
 fun DailyGoalsCardPreview() {
     HSKFlashCardTheme {
-        DailyGoalsCard(learnedWords = 8, totalWords = 10)
+        ProgressCard(learnedWords = 8, totalWords = 10)
     }
 }

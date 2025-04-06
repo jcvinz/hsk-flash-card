@@ -14,4 +14,7 @@ interface HSKWordDao {
     @Query("SELECT * FROM hsk_word WHERE hskLevel = :level AND id NOT IN (SELECT hskWordId FROM learned_hsk_word)")
     suspend fun getWordsByLevel(level: String): List<HSKWord>
 
+    @Query("SELECT COUNT() FROM hsk_word")
+    suspend fun getTotalWords(): Int
+
 }
